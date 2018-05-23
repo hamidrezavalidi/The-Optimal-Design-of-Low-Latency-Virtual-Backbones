@@ -389,37 +389,24 @@ void LazyConstraints::callback() {
 
 			if (!IsLatencyConstrainedCDS(g1, selectedVertices, s1)) // If the ``solution'' is not really a CDS, then add a new vertex cut constraint to the problem. (Note: it is enough to see if it is connected, since our initial constraints enforce that it is dominating.
 			{
-				vector<long> dist;
-
-
-				
-
-				for (long i = 0; i < g1.n; i++)
+				vector<long> minimalCut;
+				string MinimalizeSetting = "Basic";
+				if (MinimalizeSetting == "None")
+					minimalCut = MinimalizeNone(g1, selectedVertices, s1);
+				else if (MinimalizeSetting == "Basic")
+					minimalCut = MinimalizeBasic(g1, selectedVertices, s1);
+				else if (MinimalizeSetting == "Fast")
+					minimalCut = Minimalize(g1, selectedVertices, s1);   // a minimal subset of N(i) that is a length-s cut.
+				else cerr << "ERROR: not a supported value for MinimalizeSetting." << endl;
+				long v;
+				GRBLinExpr expr = 0;
+				for (long i = 0; i < minimalCut.size(); i++)
 				{
-					dist = ComputeSSSPinGBv(g1, selectedVertices, i);
-					for (long j = i+1; j < g1.n; j++)
-					{
-						if (dist[j] > s1)
-						{
-							vector<long> C_Prime;
-							for (long q = 0; q < g1.n; q++)
-							{
-								if (!selectedVertices[q] && i != q && j != q)
-									C_Prime.push_back(q);
-							}
-							// C_Prime is a length-s a,b-separator. now make it minimal
-							vector<long> minimal_length_s_ab_separator = MinimalizeAB(g1, i, j, C_Prime, s1);
-							GRBLinExpr expr = 0;
-							for (long q = 0; q < minimal_length_s_ab_separator.size(); q++)
-							{
-								long v = minimal_length_s_ab_separator[q];
-								expr += vars[v];
-							}
-							addLazy(expr >= 1);
-							numLazyCuts++;
-						}
-					}
+					v = minimalCut[i];
+					expr += vars[v];
 				}
+				addLazy(expr >= 1);
+				numLazyCuts++;
 			}
 			TotalCallbackTime += (double)(clock() - start) / CLOCKS_PER_SEC;
 			delete[] x;
