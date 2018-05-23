@@ -74,4 +74,5 @@ public:
 	static long numLazyCuts2;
 
 };
+
 #endif
