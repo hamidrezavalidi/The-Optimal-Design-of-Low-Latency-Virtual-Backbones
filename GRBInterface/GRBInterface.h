@@ -42,8 +42,6 @@ vector<long> ComputeSSSPinGBv(KGraph &g, vector<bool> &B, long v);
 // functions used to minimalize length-s vertex cuts (to strengthen the formulation)
 vector<long> Minimalize(KGraph &g, vector<bool> &B, long s);	// B is the infeasible CDS "solution"
 vector<long> Minimalize(KGraph &g, vector<long> &CUT, long s);  // CUT are the vertices not in the CDS solution
-vector<long> MinimalizeAB(KGraph &g, long a, long b, vector<long> &CUT, long s);
-//vector<long> MinimalizeAB(KGraph &g, vector<long> &CUT, long s);
 vector< vector<long> > EnumerateFarPairs(KGraph &g, vector<bool> &B, long s);
 vector< vector<long> > EnumerateFarPairsRob(KGraph &g, vector<bool> &B, long s);
 vector<long> ComplementVector(vector<bool> &B, long n);
@@ -53,7 +51,6 @@ vector<long> MinimalizeBasic(KGraph &g, vector<bool> &B, long s);
 vector<long> MinimalizeBasic(KGraph &g, vector<long> &CUT, long s);
 vector<long> MinimalizeNone(KGraph &g, vector<bool> &b, long s);
 vector<long> MinimalizeNone(KGraph &g, vector<long> &CUT, long s);
-
 
 // heuristics that we use
 vector<bool> HeuristicLCDS(KGraph &g, long s);
