@@ -30,7 +30,6 @@ class KGraph
 			vector<long> ShortestPathsUnweighted(long origin);
 			vector<long> ShortestPathsNodeWeighted(long origin, vector<long> W);
 			long LongestShortestPathNodeWeighted(long origin, vector<long> W);
-			vector<long> KGraph::ShortestPathsUnweighted(long origin, vector<bool> &S);
 
 			vector< vector<bool> > CreateAdjacenyMatrix();
 			bool DeleteNode(long i);  // deletes incident edges (and not the node itself)
@@ -80,7 +79,6 @@ class KGraph
 		/* functions for induced subgraphs */
 		void FindInducedGraph(vector<bool> &S);
 		KGraph CreateInducedGraph(vector<long> &S);
-		KGraph CreateInducedGraph(vector<long> &S, vector<long> &ReverseMap);
 		void FindConnectedComponents(vector< vector< long> > &components, vector<long> &degreeZero);
 
 		/* Destructors */
