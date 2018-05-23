@@ -107,35 +107,27 @@ long KGraph::DiameterUnweighted(vector<bool> S1)
 }
 
 vector<long> KGraph::ShortestPathsUnweighted(long origin)
-{
-	vector<bool> S(n, true);
-	return ShortestPathsUnweighted(origin, S);
-}
-
-
-vector<long> KGraph::ShortestPathsUnweighted(long origin, vector<bool> &S)
-{
-	/*Finds the shortest paths from node v to all other nodes in graph G[S].
-	Assumes the graph is connected.
+{ 
+	/*Finds the shortest paths from node v to all other nodes.
+	Assumes the graph is connected. 
 	Performs BFS.*/
 	long u, v;
-	vector<long> dist(n, n); //shortest distance from origin node to each other node. dist[i] = n means i not reachable
-	if (!S[origin]) return dist;  // if origin not in S, return infinities.
-	vector<bool> reached(n, false);
-	vector<long> children, parents;
-
+	vector<long> dist(n,n); //shortest distance from origin node to each other node. dist[i] = n means i not reachable
+	vector<bool> reached(n,false);
+	vector<long> children,parents;
+	
 	children.push_back(origin);
 	dist[origin] = 0; //the origin node is distance 0 from itself
 	reached[origin] = true;
 
-	for (long d = 1; !children.empty(); d++) { //for each distance
+	for(long d = 1; !children.empty(); d++) { //for each distance
 		parents = children;
 		children.clear();
-		for (long i = 0; i<parents.size(); i++) { //for each parent, examine the children
+		for(long i=0; i<parents.size(); i++) { //for each parent, examine the children
 			u = parents[i];
-			for (long j = 0; j<degree[u]; j++) {
+			for(long j=0; j<degree[u]; j++)	{
 				v = adj[u][j];
-				if (!reached[v] && S[v]) {
+				if(!reached[v])	{
 					reached[v] = true;
 					dist[v] = d;
 					children.push_back(v);
@@ -145,38 +137,6 @@ vector<long> KGraph::ShortestPathsUnweighted(long origin, vector<bool> &S)
 	}
 	return dist;
 }
-
-//vector<long> KGraph::ShortestPathsUnweighted(long origin)
-//{ 
-//	/*Finds the shortest paths from node v to all other nodes.
-//	Assumes the graph is connected. 
-//	Performs BFS.*/
-//	long u, v;
-//	vector<long> dist(n,n); //shortest distance from origin node to each other node. dist[i] = n means i not reachable
-//	vector<bool> reached(n,false);
-//	vector<long> children,parents;
-//	
-//	children.push_back(origin);
-//	dist[origin] = 0; //the origin node is distance 0 from itself
-//	reached[origin] = true;
-//
-//	for(long d = 1; !children.empty(); d++) { //for each distance
-//		parents = children;
-//		children.clear();
-//		for(long i=0; i<parents.size(); i++) { //for each parent, examine the children
-//			u = parents[i];
-//			for(long j=0; j<degree[u]; j++)	{
-//				v = adj[u][j];
-//				if(!reached[v])	{
-//					reached[v] = true;
-//					dist[v] = d;
-//					children.push_back(v);
-//				}
-//			}
-//		}
-//	}
-//	return dist;
-//}
 long KGraph::LongestShortestPathUnweighted(long origin)
 { 
 	vector<long> SP = ShortestPathsUnweighted(origin);
@@ -663,27 +623,6 @@ void KGraph::FindInducedGraph(vector<bool> &S)
 		if(!S[i])
 			DeleteNode(i);
 }
-
-KGraph KGraph::CreateInducedGraph(vector<long> &S, vector<long> &ReverseMap)
-{
-	/* Finds the subgraph induced by all the nodes in S. S is sorted */
-	unsigned long S_size = S.size();
-	KGraph g(S_size);
-	ReverseMap.resize(n, -1);
-	for (long i = 0; i<S_size; i++)
-		ReverseMap[S[i]] = i;
-	for (unsigned long i = 0; i<S_size; i++)
-	{
-		g.adj[i] = CommonNeighborsList(S[i], S);
-		g.degree[i] = g.adj[i].size();
-		for (long j = 0; j<g.degree[i]; j++) //relabel the vertices for the new, smaller graph
-			g.adj[i][j] = ReverseMap[g.adj[i][j]];
-		g.m += g.degree[i];
-	}
-	g.m /= 2;
-	return g;
-}
-
 
 KGraph KGraph::CreateInducedGraph(vector<long> &S)
 {
