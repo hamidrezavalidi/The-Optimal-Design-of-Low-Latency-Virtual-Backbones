@@ -472,17 +472,6 @@ vector<long> ComplementVector(vector<bool> &B, long n)
 	}
 	return Q;
 }
-//vector<long> MinimalizeAB(KGraph &g, vector<long> &CUT, long s)
-//{
-//	vector<bool> B(g.n, true);
-//	long v;
-//	for (long i = 0; i < CUT.size(); i++)
-//	{
-//		v = CUT[i];
-//		B[v] = false;
-//	}
-//	return MinimalizeAB(g, B, s);
-//}
 vector<long> Minimalize(KGraph &g, vector<long> &CUT, long s)
 {
 	vector<bool> B(g.n, true);
@@ -653,31 +642,6 @@ vector<long> MinimalizeWeighted(KGraph &g, vector<bool> &B, long s, vector<long>
 		}
 	}
 	return ComplementVector(B, g.n);
-}
-
-vector<long> MinimalizeAB(KGraph &g, long a, long b, vector<long> &CUT, long s)
-{
-	vector<long> MinimalCut; // what we return at end of function
-	vector<bool> newCut(g.n, false); // a boolean representation of the cut. 
-
-								  // first do some linear-time preprocessing to remove vertices that are not on length-k a,b-path
-								  //		for example, this removes vertices that belong to a different component in G.
-	vector<long> dist_from_a = g.ShortestPathsUnweighted(a);
-	vector<long> dist_from_b = g.ShortestPathsUnweighted(b);
-	for (long i = 0; i < CUT.size(); i++)
-	{
-		long v = CUT[i];
-		if (dist_from_a[v] + dist_from_b[v] <= s)
-		{
-			newCut[v] = true;  // vertex v was in ab_Separator AND belongs to a length-k a,b-path in graph G
-		}
-	}
-	for (long i = 0; i < g.n; i++)
-	{
-		if (!newCut[i]) continue;
-		MinimalCut.push_back(i);
-	}
-	return MinimalCut;
 }
 
 vector<long> Minimalize(KGraph &g, vector<bool> &B, long s)
@@ -1443,7 +1407,7 @@ vector<long> solveMCDS(KGraph &g, long s)
 		cerr << "Adding domination constraints" << endl;
 		long v;
 		vector<long> minimalCut;
-		string MinimalizeSetting = "Fast";
+		string MinimalizeSetting = "Basic";
 		for (int i = 0; i<g.n; i++) // for each vertex i, make sure you choose at least one vertex from N(i). This is a vertex cut!
 		{
 			if(MinimalizeSetting == "None")
@@ -1452,8 +1416,6 @@ vector<long> solveMCDS(KGraph &g, long s)
 				minimalCut = MinimalizeBasic(g, g.adj[i], s);
 			else if(MinimalizeSetting == "Fast")
 				minimalCut = Minimalize(g, g.adj[i], s);   // a minimal subset of N(i) that is a length-s cut.
-/*			else if (MinimalizeSetting == "ab")
-				minimalCut = MinimalizeAB(g, g.adj[i], s); */ 
 			else cerr << "ERROR: not a supported value for MinimalizeSetting." << endl;
 			GRBLinExpr expr = 0;
 			for (long j = 0; j < minimalCut.size(); j++)
