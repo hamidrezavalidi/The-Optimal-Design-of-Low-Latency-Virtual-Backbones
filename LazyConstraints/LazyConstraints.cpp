@@ -188,7 +188,7 @@ LazyConstraints5::LazyConstraints5(GRBVar * xvars, KGraph & g, long &s)
 
 void LazyConstraints5::callback() {
 	try {
-		if (where == GRB_CB_MIPNODE && GRB_CB_MIPNODE_STATUS == GRB_OPTIMAL) // Found an integer ``solution'' that satisfies all vertex cut constraints so far.
+		if (where == GRB_CB_MIPNODE && GRB_CB_MIPNODE_STATUS == GRB_OPTIMAL) // Found a fractional ``solution'' that satisfies all vertex cut constraints so far.
 		{
 			numCallbacks++;
 			long MaxNumCuts = 10;
